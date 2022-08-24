@@ -69,6 +69,22 @@ class Ui_MainWindow(object):
         self.ttv.setText(_translate("MainWindow", "Озвучить"))
 
     def ttv_click(self):
+        self.hideOrShowButton(0)
+        Thread(target=self.changeButton2).start()
+        Thread(target=self.voice).start()
+
+    def changeButton2(self):
+        while self.check:
+            for i in range(1, 4):
+                if not self.check:
+                    break
+                self.ttv.setText("Озвучивание" + '.' * i)
+                time.sleep(0.3)
+        self.hideOrShowButton(1)
+        self.ttv.setText("Озвучить")
+        self.check = True
+
+    def voice(self):
         tts = ptsx.init('sapi5')
         rate = tts.getProperty('rate')  # Скорость произношения
         tts.setProperty('rate', rate - 40)
@@ -88,6 +104,7 @@ class Ui_MainWindow(object):
 
         tts.say(self.textBrowser.toPlainText())
         tts.runAndWait()
+        self.check = True
 
     def pushButton1_click(self):
         self.hideOrShowButton(0)
