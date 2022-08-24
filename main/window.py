@@ -27,22 +27,22 @@ class Ui_MainWindow(object):
         self.textBrowser.setObjectName("textBrowser")
 
         self.pushButton = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButton.setGeometry(QtCore.QRect(140, 400, 121, 41))
+        self.pushButton.setGeometry(QtCore.QRect(140, 400, 120, 40))
         self.pushButton.setObjectName("pushButton")
         self.pushButton.clicked.connect(self.pushButton_click)
 
         self.pushButton1 = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButton1.setGeometry(QtCore.QRect(140, 360, 121, 41))
+        self.pushButton1.setGeometry(QtCore.QRect(140, 360, 120, 40))
         self.pushButton1.setObjectName("pushButton1")
         self.pushButton1.clicked.connect(self.pushButton1_click)
 
         self.cleartext = QtWidgets.QPushButton(self.centralwidget)
-        self.cleartext.setGeometry(QtCore.QRect(140, 480, 121, 41))
+        self.cleartext.setGeometry(QtCore.QRect(140, 480, 120, 40))
         self.cleartext.setObjectName("cleartext")
         self.cleartext.clicked.connect(self.textBrowser.clear)
 
         self.ttv = QtWidgets.QPushButton(self.centralwidget)
-        self.ttv.setGeometry(QtCore.QRect(140, 440, 121, 41))
+        self.ttv.setGeometry(QtCore.QRect(140, 440, 120, 40))
         self.ttv.setObjectName("texttovoice")
         self.ttv.clicked.connect(self.ttv_click)
 
