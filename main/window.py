@@ -78,30 +78,16 @@ class Ui_MainWindow(object):
             for i in range(1, 4):
                 if not self.check:
                     break
-                self.ttv.setText("Озвучивание" + '.' * i)
+                self.ttv.setText("Обработка аудио" + '.' * i)
                 time.sleep(0.3)
         self.hideOrShowButton(1)
         self.ttv.setText("Озвучить")
         self.check = True
 
     def voice(self):
-        tts = ptsx.init('sapi5')
-        rate = tts.getProperty('rate')  # Скорость произношения
-        tts.setProperty('rate', rate - 40)
-
-        volume = tts.getProperty('volume')  # Громкость голоса
-        tts.setProperty('volume', volume + 0.9)
-
-        voices = tts.getProperty('voices')
-
-        # Задать голос по умолчанию
-        tts.setProperty('voice', 'ru-RU')
-
-        # Попробовать установить предпочтительный голос
-        for voice in voices:
-            if voice.name == 'Anna':
-                tts.setProperty('voice', voice.id)
-
+        tts = ptsx.init()
+        tts.setProperty("rate", 150)
+        tts.setProperty("volume", 1)
         tts.say(self.textBrowser.toPlainText())
         tts.runAndWait()
         self.check = False
