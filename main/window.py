@@ -19,9 +19,10 @@ class Ui_MainWindow(object):
 
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(400, 560)
+        MainWindow.resize(400, 530)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
+
         self.textBrowser = QtWidgets.QTextBrowser(self.centralwidget)
         self.textBrowser.setGeometry(QtCore.QRect(10, 10, 380, 340))
         self.textBrowser.setObjectName("textBrowser")
@@ -33,6 +34,8 @@ class Ui_MainWindow(object):
         self.pushButton3 = QtWidgets.QPushButton(self.centralwidget)
         self.pushButton3.setGeometry(QtCore.QRect(180, 240, 40, 40))
         self.pushButton3.setObjectName("pushButton3")
+        self.pushButton3.clicked.connect(self.hideError)
+        self.pushButton3.clicked.connect(self.error.clear)
 
         self.pushButton = QtWidgets.QPushButton(self.centralwidget)
         self.pushButton.setGeometry(QtCore.QRect(140, 400, 120, 40))
@@ -61,10 +64,9 @@ class Ui_MainWindow(object):
         self.menubar.setObjectName("menubar")
         MainWindow.setMenuBar(self.menubar)
 
-        self.statusbar = QtWidgets.QStatusBar(MainWindow)
-        self.statusbar.setObjectName("statusbar")
-        MainWindow.setStatusBar(self.statusbar)
+        MainWindow.setFixedSize(MainWindow.width(), MainWindow.height());
 
+        self.hideError()
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
@@ -113,8 +115,11 @@ class Ui_MainWindow(object):
                     break
                 self.pushButton1.setText("Обработка аудио" + '.' * i)
                 time.sleep(0.3)
-        self.hideOrShowButton(1)
         self.pushButton1.setText("Выбрать файл")
+        if self.errorCheck:
+            self.showError(2)
+        else:
+            self.hideOrShowButton(1)
         self.check = True
 
     def fileRecognition(self, MainWindow):
@@ -128,9 +133,9 @@ class Ui_MainWindow(object):
                     text = self.r.recognize_google(data, language='ru-RU').lower()
                     self.textBrowser.append(text)
                 except Exception:
-                    pass
+                    self.errorCheck = True
         except Exception:
-            pass
+            self.errorCheck = True
         self.check = False
 
     def pushButton_click(self):
@@ -145,8 +150,11 @@ class Ui_MainWindow(object):
                     break
                 self.pushButton.setText("Идёт запись" + '.' * i)
                 time.sleep(0.3)
-        self.hideOrShowButton(1)
         self.pushButton.setText("Начать запись")
+        if self.errorCheck:
+            self.showError(1)
+        else:
+            self.hideOrShowButton(1)
         self.check = True
 
     def micro(self):
@@ -159,9 +167,9 @@ class Ui_MainWindow(object):
                     text = self.r.recognize_google(audio_data=data, language='ru-RU').lower()
                     self.textBrowser.append(text)
                 except Exception:
-                    self.error(1)
+                    self.errorCheck = True
         except Exception:
-            pass
+            self.errorCheck = True
         self.check = False
 
     def hideOrShowButton(self, x):
@@ -176,8 +184,26 @@ class Ui_MainWindow(object):
             self.ttv.setEnabled(False)
             self.cleartext.setEnabled(False)
 
-    def error(self, x):
-        self.pushButton.setToolTip('микро')
-        position = QPoint(150, 420)
-        pos = QRect(100, 100, 200, 200)
-        QToolTip.showText(position, 'микро', None, pos, 5000)
+    def hideError(self):
+        self.pushButton3.hide()
+        self.error.hide()
+        self.hideOrShowButton(1)
+
+    def showError(self, x):
+        self.pushButton3.show()
+        self.error.show()
+        self.hideOrShowButton(0)
+        self.errorCheck = False
+        self.error.update()
+        if x == 1:
+            self.error.append('ОШИБКА\n'
+                              '\nВозможные причины:'
+                              '\n-нет подключение к интернету'
+                              '\n-не найден микрофон'
+                              '\n-неправильное произношение')
+        if x == 2:
+            self.error.append('ОШИБКА\n'
+                              '\nВозможные причины:'
+                              '\n-нет подключение к интернету'
+                              '\n-не выбран wav файл'
+                              '\n-не найдены слова в wav файле')
