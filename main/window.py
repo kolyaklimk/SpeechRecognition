@@ -15,16 +15,24 @@ import pyttsx3 as ptsx
 class Ui_MainWindow(object):
     r = sr.Recognizer()
     check = True
+    errorCheck = False
 
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(400, 560)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
-
         self.textBrowser = QtWidgets.QTextBrowser(self.centralwidget)
         self.textBrowser.setGeometry(QtCore.QRect(10, 10, 380, 340))
         self.textBrowser.setObjectName("textBrowser")
+
+        self.error = QtWidgets.QTextBrowser(self.centralwidget)
+        self.error.setGeometry(QtCore.QRect(60, 60, 270, 230))
+        self.error.setObjectName("error")
+
+        self.pushButton3 = QtWidgets.QPushButton(self.centralwidget)
+        self.pushButton3.setGeometry(QtCore.QRect(180, 240, 40, 40))
+        self.pushButton3.setObjectName("pushButton3")
 
         self.pushButton = QtWidgets.QPushButton(self.centralwidget)
         self.pushButton.setGeometry(QtCore.QRect(140, 400, 120, 40))
@@ -67,6 +75,7 @@ class Ui_MainWindow(object):
         self.pushButton1.setText(_translate("MainWindow", "Выбрать файл"))
         self.cleartext.setText(_translate("MainWindow", "Очистить"))
         self.ttv.setText(_translate("MainWindow", "Озвучить"))
+        self.pushButton3.setText(_translate("MainWindow", "ОК"))
 
     def ttv_click(self):
         self.hideOrShowButton(0)
@@ -150,7 +159,7 @@ class Ui_MainWindow(object):
                     text = self.r.recognize_google(audio_data=data, language='ru-RU').lower()
                     self.textBrowser.append(text)
                 except Exception:
-                    pass
+                    self.error(1)
         except Exception:
             pass
         self.check = False
@@ -166,3 +175,9 @@ class Ui_MainWindow(object):
             self.pushButton1.setEnabled(False)
             self.ttv.setEnabled(False)
             self.cleartext.setEnabled(False)
+
+    def error(self, x):
+        self.pushButton.setToolTip('микро')
+        position = QPoint(150, 420)
+        pos = QRect(100, 100, 200, 200)
+        QToolTip.showText(position, 'микро', None, pos, 5000)
