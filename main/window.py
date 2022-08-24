@@ -104,7 +104,7 @@ class Ui_MainWindow(object):
 
         tts.say(self.textBrowser.toPlainText())
         tts.runAndWait()
-        self.check = True
+        self.check = False
 
     def pushButton1_click(self):
         self.hideOrShowButton(0)
