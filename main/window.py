@@ -1,12 +1,12 @@
 # Imports
 # Qt modules for UI
 import time
+from PyQt6 import QtCore, QtWidgets
 # Threading module
 from threading import Thread
 
 # Google Speech Recognition module
 import speech_recognition as sr
-from PyQt6 import QtCore, QtWidgets
 
 # pyttsx3 module for text-to-voice transition
 import pyttsx3 as ptsx
@@ -16,113 +16,129 @@ class Ui_MainWindow(object):
     r = sr.Recognizer()
     check = True
     errorCheck = False
-
     def setupUi(self, MainWindow):
-        MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(400, 530)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
-        self.centralwidget.setObjectName("centralwidget")
-
-        self.textBrowser = QtWidgets.QTextBrowser(self.centralwidget)
-        self.textBrowser.setGeometry(QtCore.QRect(10, 10, 380, 340))
-        self.textBrowser.setObjectName("textBrowser")
-
-        self.error = QtWidgets.QTextBrowser(self.centralwidget)
-        self.error.setGeometry(QtCore.QRect(60, 60, 270, 230))
-        self.error.setObjectName("error")
-
-        self.pushButton3 = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButton3.setGeometry(QtCore.QRect(180, 240, 40, 40))
-        self.pushButton3.setObjectName("pushButton3")
-        self.pushButton3.clicked.connect(self.hideError)
-        self.pushButton3.clicked.connect(self.error.clear)
-
-        self.pushButton = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButton.setGeometry(QtCore.QRect(140, 400, 120, 40))
-        self.pushButton.setObjectName("pushButton")
-        self.pushButton.clicked.connect(self.pushButton_click)
-
-        self.pushButton1 = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButton1.setGeometry(QtCore.QRect(140, 360, 120, 40))
-        self.pushButton1.setObjectName("pushButton1")
-        self.pushButton1.clicked.connect(self.pushButton1_click)
-
-        self.cleartext = QtWidgets.QPushButton(self.centralwidget)
-        self.cleartext.setGeometry(QtCore.QRect(140, 480, 120, 40))
-        self.cleartext.setObjectName("cleartext")
-        self.cleartext.clicked.connect(self.textBrowser.clear)
-
-        self.ttv = QtWidgets.QPushButton(self.centralwidget)
-        self.ttv.setGeometry(QtCore.QRect(140, 440, 120, 40))
-        self.ttv.setObjectName("texttovoice")
-        self.ttv.clicked.connect(self.ttv_click)
+        MainWindow.setWindowTitle("Speech Recognition")
+        MainWindow.resize(400, 540)
 
         MainWindow.setCentralWidget(self.centralwidget)
-
-        self.menubar = QtWidgets.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 400, 21))
-        self.menubar.setObjectName("menubar")
-        MainWindow.setMenuBar(self.menubar)
-
-        MainWindow.setFixedSize(MainWindow.width(), MainWindow.height());
-
-        self.hideError()
-        self.retranslateUi(MainWindow)
+        MainWindow.setFixedSize(MainWindow.width(), MainWindow.height())
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
-    def retranslateUi(self, MainWindow):
-        _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle("MainWindow")
-        self.pushButton.setText(_translate("MainWindow", "Начать запись"))
-        self.pushButton1.setText(_translate("MainWindow", "Выбрать файл"))
-        self.cleartext.setText(_translate("MainWindow", "Очистить"))
-        self.ttv.setText(_translate("MainWindow", "Озвучить"))
-        self.pushButton3.setText(_translate("MainWindow", "ОК"))
+        styleButtons = "QPushButton {" \
+                       "    color: white;" \
+                       "    background-color: #322a27;" \
+                       "    font: bold 16px;" \
+                       "    border-radius: 10;" \
+                       "}" \
+                       "QPushButton:hover {" \
+                       "    color: #322a27;" \
+                       "    background-color: #b28a66;" \
+                       "    border-radius: 10;" \
+                       "}" \
+                       "QPushButton:disabled {" \
+                       "background-color: #b28a66;" \
+                       "}"
 
-    def ttv_click(self):
-        self.hideOrShowButton(0)
-        Thread(target=self.changeButton2).start()
-        Thread(target=self.voice).start()
+        styleWindow = "QTextBrowser {" \
+                       "    color: #322a27;" \
+                       "    background-color: white;" \
+                       "    font: 14px;" \
+                       "    border-radius: 10;" \
+                       "}"
+        errorStyleWindow = "QTextBrowser {" \
+                       "    color: #322a27;" \
+                       "    background-color: #e7d8c5;" \
+                       "    font: bold 16px;" \
+                       "    border-radius: 10;" \
+                       "}"
 
-    def changeButton2(self):
+        self.mainText = QtWidgets.QTextBrowser(self.centralwidget)
+        self.mainText.setGeometry(QtCore.QRect(10, 10, 380, 340))
+        self.mainText.setStyleSheet(styleWindow)
+
+        self.errorText = QtWidgets.QTextBrowser(self.centralwidget)
+        self.errorText.setGeometry(QtCore.QRect(60, 60, 270, 230))
+        self.errorText.setStyleSheet(errorStyleWindow)
+
+        self.errorButton = QtWidgets.QPushButton(self.centralwidget)
+        self.errorButton.setGeometry(QtCore.QRect(180, 240, 40, 40))
+        self.errorButton.setStyleSheet(styleButtons)
+        self.errorButton.setText("OK")
+        self.errorButton.clicked.connect(self.hideError)
+        self.errorButton.clicked.connect(self.errorText.clear)
+
+        self.speechButton = QtWidgets.QPushButton(self.centralwidget)
+        self.speechButton.setGeometry(QtCore.QRect(10, 360, 185, 80))
+        self.speechButton.setStyleSheet(styleButtons)
+        self.speechButton.setText("START RECORDING")
+        self.speechButton.clicked.connect(self.speechButton_click)
+
+        self.fileButton = QtWidgets.QPushButton(self.centralwidget)
+        self.fileButton.setGeometry(QtCore.QRect(205, 360, 185, 80))
+        self.fileButton.setStyleSheet(styleButtons)
+        self.fileButton.setText("SELECT A FILE")
+        self.fileButton.clicked.connect(self.fileButton_click)
+
+        self.voiceButton = QtWidgets.QPushButton(self.centralwidget)
+        self.voiceButton.setGeometry(QtCore.QRect(10, 450, 185, 80))
+        self.voiceButton.setText("LISTEN")
+        self.voiceButton.setStyleSheet(styleButtons)
+        self.voiceButton.clicked.connect(self.voiceButton_click)
+
+        self.clearTextButton = QtWidgets.QPushButton(self.centralwidget)
+        self.clearTextButton.setGeometry(QtCore.QRect(205, 450, 185, 80))
+        self.clearTextButton.setStyleSheet(styleButtons)
+        self.clearTextButton.setText("CLEAR")
+        self.clearTextButton.clicked.connect(self.mainText.clear)
+
+        self.hideError()
+
+    def voiceButton_click(self):
+        self.hideOrShowButtons(0)
+        Thread(target=self.changeVoiceButton).start()
+        Thread(target=self.textToVoice).start()
+
+    def changeVoiceButton(self):
         while self.check:
             for i in range(1, 4):
                 if not self.check:
                     break
-                self.ttv.setText("Обработка аудио" + '.' * i)
+                self.voiceButton.setText("LISTENING" + '.' * i)
                 time.sleep(0.3)
-        self.hideOrShowButton(1)
-        self.ttv.setText("Озвучить")
+        self.hideOrShowButtons(1)
+        self.voiceButton.setText("LISTEN")
         self.check = True
 
-    def voice(self):
-        tts = ptsx.init()
-        tts.setProperty("rate", 150)
-        tts.setProperty("volume", 1)
-        tts.say(self.textBrowser.toPlainText())
-        tts.runAndWait()
+    def textToVoice(self):
+        ttv = ptsx.init()
+        ttv.setProperty("rate", 150)
+        ttv.setProperty("volume", 1)
+        ttv.setProperty('voice', 'ru')
+        ttv.say(self.mainText.toPlainText())
+        ttv.runAndWait()
         self.check = False
 
-    def pushButton1_click(self):
-        self.hideOrShowButton(0)
-        Thread(target=self.changeButton1).start()
-        Thread(target=self.fileRecognition(self.centralwidget)).start()
+    def fileButton_click(self):
+        self.hideOrShowButtons(0)
+        Thread(target=self.changeFileButton).start()
+        Thread(target=self.fileSpeechRecognition(self.centralwidget)).start()
 
-    def changeButton1(self):
+    def changeFileButton(self):
         while self.check:
             for i in range(1, 4):
                 if not self.check:
                     break
-                self.pushButton1.setText("Обработка аудио" + '.' * i)
+                self.fileButton.setText("AUDIO PROCESSING" + '.' * i)
                 time.sleep(0.3)
-        self.pushButton1.setText("Выбрать файл")
+        self.fileButton.setText("SELECT A FILE")
         if self.errorCheck:
             self.showError(2)
         else:
-            self.hideOrShowButton(1)
+            self.hideOrShowButtons(1)
         self.check = True
 
-    def fileRecognition(self, MainWindow):
+    def fileSpeechRecognition(self, MainWindow):
         filename = QtWidgets.QFileDialog.getOpenFileName(QtWidgets.QWidget(MainWindow), "Open file", "~/Desktop",
                                                          "wav-files(*.wav)")[0]
         file = sr.AudioFile(filename)
@@ -131,79 +147,80 @@ class Ui_MainWindow(object):
                 data = self.r.listen(source=source)
                 try:
                     text = self.r.recognize_google(data, language='ru-RU').lower()
-                    self.textBrowser.append(text)
+                    self.mainText.append(text)
                 except Exception:
                     self.errorCheck = True
         except Exception:
             self.errorCheck = True
         self.check = False
 
-    def pushButton_click(self):
-        self.hideOrShowButton(0)
-        Thread(target=self.changeButton).start()
-        Thread(target=self.micro).start()
+    def speechButton_click(self):
+        self.hideOrShowButtons(0)
+        Thread(target=self.changeSpeechButton).start()
+        Thread(target=self.microphoneSpeechRecognition).start()
 
-    def changeButton(self):
+    def changeSpeechButton(self):
         while self.check:
             for i in range(1, 4):
                 if not self.check:
                     break
-                self.pushButton.setText("Идёт запись" + '.' * i)
+                self.speechButton.setText("RECORDING" + '.' * i)
                 time.sleep(0.3)
-        self.pushButton.setText("Начать запись")
+        self.speechButton.setText("START RECORDING")
         if self.errorCheck:
             self.showError(1)
         else:
-            self.hideOrShowButton(1)
+            self.hideOrShowButtons(1)
         self.check = True
 
-    def micro(self):
+    def microphoneSpeechRecognition(self):
         try:
             with sr.Microphone() as mic:
                 self.r.pause_threshold = 0.5
-                self.r.adjust_for_ambient_noise(source=mic, duration=0.5)
                 data = self.r.listen(source=mic)
                 try:
                     text = self.r.recognize_google(audio_data=data, language='ru-RU').lower()
-                    self.textBrowser.append(text)
+                    self.mainText.append(text)
                 except Exception:
                     self.errorCheck = True
         except Exception:
             self.errorCheck = True
         self.check = False
 
-    def hideOrShowButton(self, x):
+    def hideOrShowButtons(self, x):
         if x:
-            self.pushButton.setEnabled(True)
-            self.pushButton1.setEnabled(True)
-            self.ttv.setEnabled(True)
-            self.cleartext.setEnabled(True)
+            self.speechButton.setEnabled(True)
+            self.fileButton.setEnabled(True)
+            self.voiceButton.setEnabled(True)
+            self.clearTextButton.setEnabled(True)
         else:
-            self.pushButton.setEnabled(False)
-            self.pushButton1.setEnabled(False)
-            self.ttv.setEnabled(False)
-            self.cleartext.setEnabled(False)
+            self.speechButton.setEnabled(False)
+            self.fileButton.setEnabled(False)
+            self.voiceButton.setEnabled(False)
+            self.clearTextButton.setEnabled(False)
 
     def hideError(self):
-        self.pushButton3.hide()
-        self.error.hide()
-        self.hideOrShowButton(1)
+        self.errorButton.hide()
+        self.errorText.hide()
+        self.hideOrShowButtons(1)
 
     def showError(self, x):
-        self.pushButton3.show()
-        self.error.show()
-        self.hideOrShowButton(0)
+        self.errorButton.show()
+        self.errorText.show()
+        self.hideOrShowButtons(0)
         self.errorCheck = False
-        self.error.update()
+        self.errorText.update()
+        self.errorText.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
         if x == 1:
-            self.error.append('ОШИБКА\n'
-                              '\nВозможные причины:'
-                              '\n-нет подключение к интернету'
-                              '\n-не найден микрофон'
-                              '\n-неправильное произношение')
+            self.errorText.append('ERROR\n'
+                                  '\nPOSSIBLE REASONS:'
+                                  '\nNO INTERNET CONNECTION'
+                                  '\nMICROPHONE NOT CONNECTED'
+                                  '\nMICROPHONE IS DEFECTIVE'
+                                  '\nMISPRONUNCIATION')
         if x == 2:
-            self.error.append('ОШИБКА\n'
-                              '\nВозможные причины:'
-                              '\n-нет подключение к интернету'
-                              '\n-не выбран wav файл'
-                              '\n-не найдены слова в wav файле')
+            self.errorText.append('ERROR\n'
+                                  '\nPOSSIBLE REASONS:'
+                                  '\nNO INTERNET CONNECTION'
+                                  '\nWRONG FILE SELECTED'
+                                  '\nWORDS IN WAV FILE NOT FOUND')
