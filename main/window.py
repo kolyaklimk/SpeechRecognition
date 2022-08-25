@@ -50,7 +50,7 @@ class Ui_MainWindow(object):
         errorStyleWindow = "QTextBrowser {" \
                            "    color: #322a27;" \
                            "    background-color: #e7d8c5;" \
-                           "    font: bold 16px;" \
+                           "    font: bold 15px;" \
                            "    border-radius: 10;" \
                            "}"
 
@@ -59,7 +59,7 @@ class Ui_MainWindow(object):
         self.mainText.setStyleSheet(styleWindow)
 
         self.errorText = QtWidgets.QTextBrowser(self.centralwidget)
-        self.errorText.setGeometry(QtCore.QRect(60, 60, 270, 230))
+        self.errorText.setGeometry(QtCore.QRect(50, 50, 300, 260))
         self.errorText.setStyleSheet(errorStyleWindow)
 
         self.errorButton = QtWidgets.QPushButton(self.centralwidget)
@@ -216,7 +216,7 @@ class Ui_MainWindow(object):
             self.errorText.append('ERROR\n'
                                   '\nPOSSIBLE REASONS:'
                                   '\nNO INTERNET CONNECTION'
-                                  '\nMICROPHONE NOT CONNECTED'
+                                  '\nMICROPHONE IS NOT CONNECTED'
                                   '\nMICROPHONE IS DEFECTIVE'
                                   '\nMISPRONUNCIATION')
         if x == 2:
@@ -224,4 +224,4 @@ class Ui_MainWindow(object):
                                   '\nPOSSIBLE REASONS:'
                                   '\nNO INTERNET CONNECTION'
                                   '\nWRONG FILE SELECTED'
-                                  '\nWORDS IN WAV FILE NOT FOUND')
+                                  '\nWORDS IN WAV FILE ARE NOT FOUND')
