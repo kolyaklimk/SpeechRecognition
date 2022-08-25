@@ -13,9 +13,10 @@ import pyttsx3 as ptsx
 
 
 class Ui_MainWindow(object):
-    r = sr.Recognizer()
+    recognizer = sr.Recognizer()
     check = True
     errorCheck = False
+
     def setupUi(self, MainWindow):
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         MainWindow.setWindowTitle("Speech Recognition")
@@ -41,17 +42,17 @@ class Ui_MainWindow(object):
                        "}"
 
         styleWindow = "QTextBrowser {" \
-                       "    color: #322a27;" \
-                       "    background-color: white;" \
-                       "    font: 14px;" \
-                       "    border-radius: 10;" \
-                       "}"
+                      "    color: #322a27;" \
+                      "    background-color: white;" \
+                      "    font: 14px;" \
+                      "    border-radius: 10;" \
+                      "}"
         errorStyleWindow = "QTextBrowser {" \
-                       "    color: #322a27;" \
-                       "    background-color: #e7d8c5;" \
-                       "    font: bold 16px;" \
-                       "    border-radius: 10;" \
-                       "}"
+                           "    color: #322a27;" \
+                           "    background-color: #e7d8c5;" \
+                           "    font: bold 16px;" \
+                           "    border-radius: 10;" \
+                           "}"
 
         self.mainText = QtWidgets.QTextBrowser(self.centralwidget)
         self.mainText.setGeometry(QtCore.QRect(10, 10, 380, 340))
@@ -144,9 +145,9 @@ class Ui_MainWindow(object):
         file = sr.AudioFile(filename)
         try:
             with file as source:
-                data = self.r.listen(source=source)
+                data = self.recognizer.listen(source=source)
                 try:
-                    text = self.r.recognize_google(data, language='ru-RU').lower()
+                    text = self.recognizer.recognize_google(data, language='ru-RU').lower()
                     self.mainText.append(text)
                 except Exception:
                     self.errorCheck = True
@@ -176,10 +177,10 @@ class Ui_MainWindow(object):
     def microphoneSpeechRecognition(self):
         try:
             with sr.Microphone() as mic:
-                self.r.pause_threshold = 0.5
-                data = self.r.listen(source=mic)
+                self.recognizer.pause_threshold = 0.5
+                data = self.recognizer.listen(source=mic)
                 try:
-                    text = self.r.recognize_google(audio_data=data, language='ru-RU').lower()
+                    text = self.recognizer.recognize_google(audio_data=data, language='ru-RU').lower()
                     self.mainText.append(text)
                 except Exception:
                     self.errorCheck = True
