@@ -9,4 +9,4 @@ It also provides the ability to playback text with embedded voice using the *pyt
 - Playing text with embedded voice
 
 # Main program window
-![SpeechRecognition](https://github.com/kolyaklimk/SpeechRecognition/assets/93304825/6fde0d2d-60a2-4629-bbc2-d17e2b63a2f6)
+![SpeechRecognition](https://github.com/kolyaklimk/SpeechRecognition/assets/93304825/dc9d32c3-b77e-45bc-9229-f371885f35ac)
